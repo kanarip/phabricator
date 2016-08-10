@@ -50,7 +50,7 @@ final class PhabricatorRemarkupCowsayBlockInterpreter
     $root = dirname(phutil_get_library_root('phabricator'));
 
     $directories = array(
-      $root.'/externals/cowsay/cows/',
+      '/usr/share/cowsay/',
       $root.'/resources/cows/builtin/',
       $root.'/resources/cows/custom/',
     );
