@@ -94,12 +94,14 @@ abstract class PhabricatorMailReceiver extends Phobject {
    */
   public function loadSender(PhabricatorMetaMTAReceivedMail $mail) {
     $raw_from = $mail->getHeader('From');
-    $from = self::getRawAddress($raw_from);
+    $from = id(new PhutilEmailAddress($raw_from))
+      ->getAddress();
 
     $reasons = array();
 
     // Try to find a user with this email address.
     $user = PhabricatorUser::loadOneWithEmailAddress($from);
+
     if ($user) {
       return $user;
     } else {
@@ -115,9 +117,11 @@ abstract class PhabricatorMailReceiver extends Phobject {
       $reply_to_key = 'metamta.insecure-auth-with-reply-to';
       $allow_reply_to = PhabricatorEnv::getEnvConfig($reply_to_key);
       if ($allow_reply_to) {
-        $reply_to = self::getRawAddress($raw_reply_to);
+        $reply_to = id(new PhutilEmailAddress($raw_reply_to))
+          ->getAddress();
 
         $user = PhabricatorUser::loadOneWithEmailAddress($reply_to);
+
         if ($user) {
           return $user;
         } else {
@@ -132,38 +136,6 @@ abstract class PhabricatorMailReceiver extends Phobject {
           '(Phabricator is not configured to authenticate users using the '.
           '"Reply-To" header, so it was ignored.)');
       }
-    }
-
-    // If we don't know who this user is, load or create an external user
-    // account for them if we're configured for it.
-    $email_key = 'phabricator.allow-email-users';
-    $allow_email_users = PhabricatorEnv::getEnvConfig($email_key);
-    if ($allow_email_users) {
-      $from_obj = new PhutilEmailAddress($from);
-      $xuser = id(new PhabricatorExternalAccountQuery())
-        ->setViewer($this->getViewer())
-        ->withAccountTypes(array('email'))
-        ->withAccountDomains(array($from_obj->getDomainName(), 'self'))
-        ->withAccountIDs(array($from_obj->getAddress()))
-        ->requireCapabilities(
-          array(
-            PhabricatorPolicyCapability::CAN_VIEW,
-            PhabricatorPolicyCapability::CAN_EDIT,
-          ))
-        ->loadOneOrCreate();
-      return $xuser->getPhabricatorUser();
-    } else {
-      // NOTE: Currently, we'll always drop this mail (since it's headed to
-      // an unverified recipient). See T12237. These details are still useful
-      // because they'll appear in the mail logs and Mail web UI.
-
-      $reasons[] = pht(
-        'Phabricator is also not configured to allow unknown external users '.
-        'to send mail to the system using just an email address.');
-      $reasons[] = pht(
-        'To interact with Phabricator, add this address ("%s") to your '.
-        'account.',
-        $raw_from);
     }
 
     if ($this->getApplicationEmail()) {
@@ -185,6 +157,53 @@ abstract class PhabricatorMailReceiver extends Phobject {
           $application_email->getAddress(),
           $default_user_phid);
       }
+    }
+
+    // If we don't know who this user is, load or create an external user
+    // account for them if we're configured for it.
+    $email_key = 'phabricator.allow-email-users';
+    $allow_email_users = PhabricatorEnv::getEnvConfig($email_key);
+
+    if ($allow_email_users) {
+      if (empty($raw_from) && !empty($raw_reply_to)) {
+        $raw_from = $raw_reply_to;
+      }
+
+      $from = new PhutilEmailAddress($raw_from);
+      $email_address = $from->getAddress();
+      $realname = $from->getDisplayName();
+
+      if (empty($realname)) {
+        $realname = $this->generateRealname();
+      }
+
+      $username = $this->generateUsername($realname);
+
+      $admin = PhabricatorUser::getOmnipotentUser();
+      $user = new PhabricatorUser();
+      $user->setUsername($username);
+      $user->setRealname($realname);
+      $user->setIsApproved(1);
+
+      $email_object = id(new PhabricatorUserEmail())
+        ->setAddress($email_address)
+        ->setIsVerified(1);
+
+      id(new PhabricatorUserEditor())
+        ->setActor($admin)
+        ->createNewUser($user, $email_object);
+
+      //$user->sendWelcomeEmail($admin);
+
+      return $user;
+    } else {
+      $reasons[] = pht(
+        'Phabricator is also not configured to allow unknown external users '.
+        'to send mail to the system using just an email address.');
+      $reasons[] = pht(
+        'To interact with Phabricator, add this address ("%s") to your '.
+        'account.',
+        $raw_from);
     }
 
     $reasons = implode("\n\n", $reasons);
@@ -272,4 +291,65 @@ abstract class PhabricatorMailReceiver extends Phobject {
     return trim(phutil_utf8_strtolower($address));
   }
 
+  protected function generateRealname() {
+    $realname_generator = new PhutilRealNameContextFreeGrammar();
+    $random_real_name = $realname_generator->generate();
+    return $random_real_name;
+  }
+
+  protected function generateUsername($random_real_name) {
+    $name = strtolower($random_real_name);
+    $name = preg_replace('/[^a-z]/s'  , ' ', $name);
+    $name = preg_replace('/\s+/', ' ', $name);
+    $words = explode(' ', $name);
+    $random = rand(0, 4);
+    $reduced = '';
+    if ($random == 0) {
+      foreach ($words as $w) {
+         if ($w == end($words)) {
+          $reduced .= $w;
+        } else {
+          $reduced .= $w[0];
+        }
+      }
+    } else if ($random == 1) {
+        foreach ($words as $w) {
+          if ($w == $words[0]) {
+            $reduced .= $w;
+          } else {
+            $reduced .= $w[0];
+          }
+        }
+    } else if ($random == 2) {
+        foreach ($words as $w) {
+          if ($w == $words[0] || $w == end($words)) {
+            $reduced .= $w;
+          } else {
+            $reduced .= $w[0];
+          }
+        }
+    } else if ($random == 3) {
+        foreach ($words as $w) {
+          if ($w == $words[0] || $w == end($words)) {
+            $reduced .= $w;
+          } else {
+            $reduced .= $w[0].'.';
+          }
+        }
+      } else if ($random == 4) {
+        foreach ($words as $w) {
+          if ($w == $words[0] || $w == end($words)) {
+            $reduced .= $w;
+          } else {
+            $reduced .= $w[0].'_';
+          }
+        }
+      }
+      $random1 = rand(0, 4);
+      if ($random1 >= 1) {
+        $reduced = ucfirst($reduced);
+      }
+      $username = $reduced;
+      return $username;
+  }
 }
