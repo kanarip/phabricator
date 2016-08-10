@@ -96,11 +96,6 @@
       "rule": ".login-Twitter",
       "hash": "5a60e22662a2f5c5c1bc036153f64a18"
     },
-    "login-WePay": {
-      "name": "login-WePay",
-      "rule": ".login-WePay",
-      "hash": "39a4c5ec26ee8400239b246761b83aa3"
-    },
     "login-WordPressCOM": {
       "name": "login-WordPressCOM",
       "rule": ".login-WordPressCOM",
