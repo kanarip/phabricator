@@ -4907,7 +4907,6 @@ phutil_register_library_map(array(
     'PhortunePurchasePHIDType' => 'applications/phortune/phid/PhortunePurchasePHIDType.php',
     'PhortunePurchaseQuery' => 'applications/phortune/query/PhortunePurchaseQuery.php',
     'PhortuneSchemaSpec' => 'applications/phortune/storage/PhortuneSchemaSpec.php',
-    'PhortuneStripePaymentProvider' => 'applications/phortune/provider/PhortuneStripePaymentProvider.php',
     'PhortuneSubscription' => 'applications/phortune/storage/PhortuneSubscription.php',
     'PhortuneSubscriptionCart' => 'applications/phortune/cart/PhortuneSubscriptionCart.php',
     'PhortuneSubscriptionEditController' => 'applications/phortune/controller/subscription/PhortuneSubscriptionEditController.php',
@@ -10959,7 +10958,6 @@ phutil_register_library_map(array(
     'PhortunePurchasePHIDType' => 'PhabricatorPHIDType',
     'PhortunePurchaseQuery' => 'PhabricatorCursorPagedPolicyAwareQuery',
     'PhortuneSchemaSpec' => 'PhabricatorConfigSchemaSpec',
-    'PhortuneStripePaymentProvider' => 'PhortunePaymentProvider',
     'PhortuneSubscription' => array(
       'PhortuneDAO',
       'PhabricatorPolicyInterface',
