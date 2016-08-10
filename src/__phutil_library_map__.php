@@ -3336,8 +3336,6 @@ phutil_register_library_map(array(
     'PhabricatorMailImplementationAdapter' => 'applications/metamta/adapter/PhabricatorMailImplementationAdapter.php',
     'PhabricatorMailImplementationMailgunAdapter' => 'applications/metamta/adapter/PhabricatorMailImplementationMailgunAdapter.php',
     'PhabricatorMailImplementationPHPMailerAdapter' => 'applications/metamta/adapter/PhabricatorMailImplementationPHPMailerAdapter.php',
-    'PhabricatorMailImplementationPHPMailerLiteAdapter' => 'applications/metamta/adapter/PhabricatorMailImplementationPHPMailerLiteAdapter.php',
-    'PhabricatorMailImplementationPostmarkAdapter' => 'applications/metamta/adapter/PhabricatorMailImplementationPostmarkAdapter.php',
     'PhabricatorMailImplementationSendGridAdapter' => 'applications/metamta/adapter/PhabricatorMailImplementationSendGridAdapter.php',
     'PhabricatorMailImplementationTestAdapter' => 'applications/metamta/adapter/PhabricatorMailImplementationTestAdapter.php',
     'PhabricatorMailManagementListInboundWorkflow' => 'applications/metamta/management/PhabricatorMailManagementListInboundWorkflow.php',
