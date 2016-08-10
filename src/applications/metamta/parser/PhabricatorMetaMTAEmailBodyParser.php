@@ -81,6 +81,7 @@ final class PhabricatorMetaMTAEmailBodyParser extends Phobject {
   }
 
   private function stripQuotedText($body) {
+    return rtrim($body);
 
     // Look for "On <date>, <user> wrote:". This may be split across multiple
     // lines. We need to be careful not to remove all of a message like this:
