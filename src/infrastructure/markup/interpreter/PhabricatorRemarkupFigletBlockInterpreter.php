@@ -19,8 +19,7 @@ final class PhabricatorRemarkupFigletBlockInterpreter
       $font = 'standard';
     }
 
-    $root = dirname(phutil_get_library_root('phabricator'));
-    require_once $root.'/externals/pear-figlet/Text/Figlet.php';
+    require_once '/usr/share/pear/Text/Figlet.php';
 
     $figlet = new Text_Figlet();
     $figlet->loadFont($map[$font]);
@@ -46,11 +45,9 @@ final class PhabricatorRemarkupFigletBlockInterpreter
   }
 
   private static function getFigletMap() {
-    $root = dirname(phutil_get_library_root('phabricator'));
-
     $dirs = array(
       '/usr/share/figlet/',
-      $root.'/externals/pear-figlet/fonts/',
+      '/usr/share/pear-data/Text_Figlet/fonts/',
     );
 
     $map = array();
