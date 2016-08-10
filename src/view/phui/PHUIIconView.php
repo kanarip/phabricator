@@ -607,7 +607,6 @@ final class PHUIIconView extends AphrontTagView {
       'fa-cc-discover',
       'fa-cc-amex',
       'fa-cc-paypal',
-      'fa-cc-stripe',
       'fa-bell-slash',
       'fa-bell-slash-o',
       'fa-trash',

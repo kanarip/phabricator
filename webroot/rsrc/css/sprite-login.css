@@ -79,10 +79,6 @@ only screen and (min-resolution: 1.5dppx) {
   background-position: -29px -87px;
 }
 
-.login-Stripe {
-  background-position: -58px -87px;
-}
-
 .login-TestPayment {
   background-position: -87px -87px;
 }
