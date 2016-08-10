@@ -49,9 +49,8 @@ final class PhabricatorRemarkupFigletBlockInterpreter
     $root = dirname(phutil_get_library_root('phabricator'));
 
     $dirs = array(
-      $root.'/externals/figlet/fonts/',
+      '/usr/share/figlet/',
       $root.'/externals/pear-figlet/fonts/',
-      $root.'/resources/figlet/custom/',
     );
 
     $map = array();
