@@ -489,12 +489,6 @@ class PHPMailerLite {
 
       // Choose the mailer and send through it
       switch($this->Mailer) {
-
-        case 'amazon-ses':
-          return $this->customMailer->executeSend(
-            $header.
-            $body);
-
         case 'sendmail':
           $sendAction = $this->SendmailSend($header, $body);
           return $sendAction;
