@@ -32,39 +32,14 @@ final class PhabricatorCommonPasswords extends Phobject {
 
 
   /**
-   * Load the common password wordlist.
+   * Ignore the common password wordlist.
    *
    * @return map<string, bool>  Map of common passwords.
    *
    * @task common
    */
   private static function loadWordlist() {
-    $root = dirname(phutil_get_library_root('phabricator'));
-    $file = $root.'/externals/wordlist/password.lst';
-    $data = Filesystem::readFile($file);
-
-    $words = phutil_split_lines($data, $retain_endings = false);
-
-    $map = array();
-    foreach ($words as $key => $word) {
-      // The wordlist file has some comments at the top, strip those out.
-      if (preg_match('/^#!comment:/', $word)) {
-        continue;
-      }
-      $map[strtolower($word)] = true;
-    }
-
-    // Add in some application-specific passwords.
-    $map += array(
-      'phabricator' => true,
-      'phab' => true,
-      'devtools' => true,
-      'differential' => true,
-      'codereview' => true,
-      'review' => true,
-    );
-
-    return $map;
+    return Array();
   }
 
 }
