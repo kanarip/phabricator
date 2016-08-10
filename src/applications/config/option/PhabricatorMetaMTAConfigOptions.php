@@ -219,7 +219,7 @@ EODOC
       $this->newOption(
         'metamta.mail-adapter',
         'class',
-        'PhabricatorMailImplementationPHPMailerLiteAdapter')
+        'PhabricatorMailImplementationPHPMailerAdapter')
         ->setBaseClass('PhabricatorMailImplementationAdapter')
         ->setSummary(pht('Control how mail is sent.'))
         ->setDescription($adapter_description),
