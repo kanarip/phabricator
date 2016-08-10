@@ -44,31 +44,12 @@ final class DiffusionResolveUserQuery extends Phobject {
       return $phid;
     }
 
-    $phid = $this->findUserByRealName($user_name);
-    if ($phid) {
-      return $phid;
-    }
-
     // No hits yet, try to parse it as an email address.
-
     $email = new PhutilEmailAddress($user_name);
 
     $phid = $this->findUserByEmailAddress($email->getAddress());
     if ($phid) {
       return $phid;
-    }
-
-    $display_name = $email->getDisplayName();
-    if ($display_name) {
-      $phid = $this->findUserByUserName($display_name);
-      if ($phid) {
-        return $phid;
-      }
-
-      $phid = $this->findUserByRealName($display_name);
-      if ($phid) {
-        return $phid;
-      }
     }
 
     return null;
