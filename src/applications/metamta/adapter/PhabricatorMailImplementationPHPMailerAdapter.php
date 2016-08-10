@@ -9,9 +9,7 @@ final class PhabricatorMailImplementationPHPMailerAdapter
    * @phutil-external-symbol class PHPMailer
    */
   public function __construct() {
-    $root = phutil_get_library_root('phabricator');
-    $root = dirname($root);
-    require_once $root.'/externals/phpmailer/class.phpmailer.php';
+    require_once '/usr/share/php/PHPMailer/PHPMailerAutoload.php';
     $this->mailer = new PHPMailer($use_exceptions = true);
     $this->mailer->CharSet = 'utf-8';
 
