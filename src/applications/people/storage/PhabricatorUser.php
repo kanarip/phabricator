@@ -683,17 +683,19 @@ final class PhabricatorUser
       PhabricatorAuthSessionEngine::ONETIME_WELCOME);
 
     $body = pht(
-      "Welcome to Phabricator!\n\n".
+      "Welcome to %s!\n\n".
       "%s (%s) has created an account for you.\n\n".
       "  Username: %s\n\n".
-      "To login to Phabricator, follow this link and set a password:\n\n".
+      "To login to %s, follow this link and set a password:\n\n".
       "  %s\n\n".
       "After you have set a password, you can login in the future by ".
       "going here:\n\n".
       "  %s\n",
+      pht('Phabricator'),
       $admin_username,
       $admin_realname,
       $user_username,
+      pht('Phabricator'),
       $uri,
       $base_uri);
 
